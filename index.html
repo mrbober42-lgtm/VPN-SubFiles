@@ -398,16 +398,9 @@
             const serverCountEl = document.getElementById('serverCount');
             const manualAddBtn = document.getElementById('manualAddBtn');
 
-            // ===== Функция для кодирования URL подписки в формат happ://add/ =====
-            function buildHappUrl(subscriptionUrl) {
-                return HAPP_ADD_SCHEME + encodeURIComponent(subscriptionUrl);
-            }
-
             // ===== Функция для выполнения перехода по happ-ссылке =====
             function redirectToHapp() {
-                window.open(SUBSCRIPTION_FILE_URL, '_blank');
-                // Попытка перехода. На мобильных устройствах это откроет приложение HApp.
-        
+                window.location.href = HAPP_ADD_SCHEME + SUBSCRIPTION_FILE_URL;
             }
 
             // ===== Функция для показа кнопки (если авто-переход не удался) =====
