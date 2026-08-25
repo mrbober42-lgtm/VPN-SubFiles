@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Добавление VPN-подписки</title>
+
+    <!-- Подключение шрифтов Google: Roboto и Material Icons Round -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Material+Icons+Round&display=swap" rel="stylesheet">
+
+    <style>
+        /* ===== Сброс и базовые стили ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ===== Системная тема (prefers-color-scheme) ===== */
+        :root {
+            /* Акцентный цвет (основной) */
+            --accent: #7c71ff;
+            --accent-hover: #6a5fe8;
+            --accent-light: rgba(124, 113, 255, 0.12);
+
+            /* Тёмная тема (по умолчанию, если системная тёмная) */
+            --bg-page: #121212;
+            --bg-card: #1C1B1F;
+            --text-primary: #E6E1E5;
+            --text-secondary: #CAC4D0;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            --shape-opacity: 0.25;
+        }
+
+        /* Светлая тема */
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg-page: #F5F5F5;
+                --bg-card: #FFFFFF;
+                --text-primary: #1C1B1F;
+                --text-secondary: #49454F;
+                --shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+                --shape-opacity: 0.35;
+            }
+        }
+
+        /* ===== Основные стили страницы ===== */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* ===== Плавающие фигуры Material Design 3 ===== */
+        .bg-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: var(--shape-opacity);
+            will-change: transform;
+            animation: floatShape 20s infinite ease-in-out;
+        }
+
+        /* Разные формы: круги, овалы, скруглённые прямоугольники */
+        .shape--circle {
+            border-radius: 50%;
+        }
+
+        .shape--oval {
+            border-radius: 50%;
+            transform: scale(1.3, 0.8);
+        }
+
+        .shape--rounded-rect {
+            border-radius: 32px;
+        }
+
+        /* Позиции и размеры фигур */
+        .shape:nth-child(1) {
+            width: 220px;
+            height: 220px;
+            background: #FFD8E4;
+            top: 5%;
+            left: -60px;
+            animation-duration: 18s;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 160px;
+            height: 260px;
+            background: #D0E8FF;
+            bottom: 10%;
+            right: -40px;
+            animation-duration: 25s;
+            animation-delay: -5s;
+            border-radius: 40px;
+        }
+
+        .shape:nth-child(3) {
+            width: 180px;
+            height: 180px;
+            background: #FFF3C4;
+            top: 40%;
+            left: 10%;
+            animation-duration: 22s;
+            animation-delay: -10s;
+        }
+
+        .shape:nth-child(4) {
+            width: 250px;
+            height: 150px;
+            background: #E3D7FF;
+            top: 15%;
+            right: 15%;
+            animation-duration: 28s;
+            animation-delay: -3s;
+            border-radius: 50px;
+        }
+
+        .shape:nth-child(5) {
+            width: 120px;
+            height: 200px;
+            background: #C8F0E0;
+            bottom: 20%;
+            left: 5%;
+            animation-duration: 20s;
+            animation-delay: -15s;
+            border-radius: 24px;
+        }
+
+        /* Анимация плавания: перемещение и вращение */
+        @keyframes floatShape {
+            0% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+            }
+            25% {
+                transform: translate(40px, -30px) rotate(5deg) scale(1.05);
+            }
+            50% {
+                transform: translate(-20px, 40px) rotate(-3deg) scale(0.95);
+            }
+            75% {
+                transform: translate(30px, 10px) rotate(4deg) scale(1.02);
+            }
+            100% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+            }
+        }
+
+        /* ===== Карточка (MD3) ===== */
+        .card {
+            position: relative;
+            z-index: 1;
+            background-color: var(--bg-card);
+            border-radius: 28px;
+            box-shadow: var(--shadow);
+            padding: 40px 32px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            animation: cardAppear 0.5s ease-out;
+        }
+
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Иконка в карточке */
+        .card__icon {
+            font-family: 'Material Icons Round';
+            font-size: 64px;
+            color: var(--accent);
+            margin-bottom: 16px;
+            display: inline-block;
+            line-height: 1;
+            animation: iconPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes iconPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.08);
+            }
+        }
+
+        /* Заголовок */
+        .card__title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            word-break: break-word;
+            transition: color 0.3s ease;
+        }
+
+        /* Информационный блок */
+        .card__info {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .card__info .material-icons-round {
+            font-size: 20px;
+            color: var(--accent);
+        }
+
+        /* Кнопка добавления подписки */
+        .card__button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background-color: var(--accent);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 100px;
+            padding: 18px 36px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 12px rgba(124, 113, 255, 0.35);
+            min-width: 240px;
+            text-decoration: none;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            outline: none;
+        }
+
+        .card__button:hover {
+            background-color: var(--accent-hover);
+            box-shadow: 0 6px 16px rgba(124, 113, 255, 0.45);
+        }
+
+        .card__button:active {
+            transform: scale(0.97);
+            box-shadow: 0 2px 8px rgba(124, 113, 255, 0.3);
+        }
+
+        .card__button .material-icons-round {
+            font-size: 24px;
+        }
+
+        /* Кнопка изначально скрыта (пока не выяснится, что happ-схема не поддерживается) */
+        .card__button--hidden {
+            display: none;
+        }
+
+        /* ===== Подпись команды внизу слева ===== */
+        .footer-signature {
+            position: fixed;
+            bottom: 16px;
+            left: 16px;
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--text-secondary);
+            opacity: 0.6;
+            z-index: 2;
+            pointer-events: none;
+            transition: color 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== Адаптивность для мобильных ===== */
+        @media (max-width: 480px) {
+            .card {
+                padding: 32px 20px;
+                border-radius: 24px;
+            }
+
+            .card__title {
+                font-size: 24px;
+            }
+
+            .card__button {
+                padding: 16px 28px;
+                font-size: 16px;
+                min-width: 200px;
+                width: 100%;
+            }
+
+            .card__icon {
+                font-size: 56px;
+            }
+
+            .shape:nth-child(1) {
+                width: 150px;
+                height: 150px;
+                left: -40px;
+            }
+
+            .shape:nth-child(2) {
+                width: 120px;
+                height: 200px;
+                right: -30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== Плавающие фигуры на фоне (MD3, пастельные, низкая непрозрачность) ===== -->
+    <div class="bg-shapes" aria-hidden="true">
+        <!-- Светло-розовый круг -->
+        <div class="shape shape--circle"></div>
+        <!-- Светло-голубой скруглённый прямоугольник -->
+        <div class="shape shape--rounded-rect"></div>
+        <!-- Светло-жёлтый круг -->
+        <div class="shape shape--circle"></div>
+        <!-- Лавандовый скруглённый прямоугольник -->
+        <div class="shape shape--rounded-rect"></div>
+        <!-- Светло-зелёный овал -->
+        <div class="shape shape--oval"></div>
+    </div>
+
+    <!-- ===== Основная карточка ===== -->
+    <main class="card" role="main" aria-label="Добавление VPN-подписки">
+        <!-- Иконка VPN -->
+        <div class="card__icon" aria-hidden="true">vpn_key</div>
+
+        <!-- Заголовок (будет динамически заменён названием подписки) -->
+        <h1 class="card__title" id="profileTitle">Добавить подписку</h1>
+
+        <!-- Информация о количестве серверов -->
+        <div class="card__info" id="serverInfo">
+            <span class="material-icons-round" aria-hidden="true">dns</span>
+            <span id="serverCount">Серверов: ?</span>
+        </div>
+
+        <!-- Кнопка для ручного добавления (показывается, если happ-схема не поддерживается) -->
+        <button class="card__button card__button--hidden" id="manualAddBtn" type="button">
+            <span class="material-icons-round" aria-hidden="true">add_circle</span>
+            Добавить подписку
+        </button>
+    </main>
+
+    <!-- ===== Подпись команды внизу слева ===== -->
+    <div class="footer-signature">CogRift-Tech</div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ===== Константы =====
+            // URL файла подписки для запроса
+            const SUBSCRIPTION_FILE_URL = 'https://raw.githubusercontent.com/mrbober42-lgtm/VPN-SubFiles/main/subscription.conf?t=1';
+
+            // URL для схемы happ://add/ (будет закодирован)
+            const HAPP_ADD_SCHEME = 'happ://add/';
+
+            // Задержка перед авто-переходом (100 мс по требованию)
+            const AUTO_REDIRECT_DELAY_MS = 100;
+
+            // Время ожидания перед показом кнопки (если переход не сработал)
+            const REDIRECT_CHECK_DELAY_MS = 1500;
+
+            // ===== Элементы DOM =====
+            const profileTitleEl = document.getElementById('profileTitle');
+            const serverCountEl = document.getElementById('serverCount');
+            const manualAddBtn = document.getElementById('manualAddBtn');
+
+            // ===== Функция для кодирования URL подписки в формат happ://add/ =====
+            function buildHappUrl(subscriptionUrl) {
+                return HAPP_ADD_SCHEME + encodeURIComponent(subscriptionUrl);
+            }
+
+            // ===== Функция для выполнения перехода по happ-ссылке =====
+            function redirectToHapp() {
+                const happUrl = buildHappUrl(SUBSCRIPTION_FILE_URL);
+                // Попытка перехода. На мобильных устройствах это откроет приложение HApp.
+                // На десктопе обычно ничего не происходит, но некоторые браузеры могут показать предупреждение.
+                window.location.href = happUrl;
+            }
+
+            // ===== Функция для показа кнопки (если авто-переход не удался) =====
+            function showManualButton() {
+                manualAddBtn.classList.remove('card__button--hidden');
+            }
+
+            // ===== Обработка нажатия на кнопку ручного добавления =====
+            manualAddBtn.addEventListener('click', function() {
+                redirectToHapp();
+            });
+
+            // ===== Получение и парсинг данных о подписке =====
+            async function fetchAndParseSubscription() {
+                try {
+                    // Выполняем fetch-запрос к файлу подписки
+                    const response = await fetch(SUBSCRIPTION_FILE_URL, {
+                        method: 'GET',
+                        mode: 'cors', // Пытаемся использовать CORS (обычно raw.githubusercontent.com поддерживает)
+                        cache: 'no-store'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('HTTP error: ' + response.status);
+                    }
+
+                    const text = await response.text();
+
+                    // Парсим название подписки из строки #profile-title:
+                    const titleMatch = text.match(/^#profile-title:\s*(.+)$/m);
+                    const profileName = titleMatch ? titleMatch[1].trim() : null;
+
+                    // Подсчитываем количество vless-ссылок (строки, начинающиеся с vless://)
+                    const lines = text.split(/\r?\n/);
+                    const vlessCount = lines.filter(line => line.trim().startsWith('vless://')).length;
+
+                    // Обновляем DOM
+                    if (profileName) {
+                        profileTitleEl.textContent = profileName;
+                    } else {
+                        // Если название не найдено, оставляем запасной вариант
+                        profileTitleEl.textContent = 'Добавить подписку';
+                    }
+
+                    // Если количество серверов > 0, показываем его, иначе знак вопроса
+                    if (vlessCount > 0) {
+                        serverCountEl.textContent = 'Серверов: ' + vlessCount;
+                    } else {
+                        serverCountEl.textContent = 'Серверов: ?';
+                    }
+
+                } catch (error) {
+                    // Graceful degradation: при ошибке fetch или парсинга показываем запасные данные
+                    console.warn('Не удалось загрузить данные о подписке:', error);
+                    profileTitleEl.textContent = 'Добавить подписку';
+                    serverCountEl.textContent = 'Серверов: ?';
+                }
+            }
+
+            // ===== Автоматический переход с проверкой поддержки схемы =====
+            function attemptAutoRedirect() {
+                // Выполняем переход через 100 мс после загрузки страницы
+                setTimeout(() => {
+                    // Запоминаем, была ли страница скрыта (переход мог произойти)
+                    let pageHidden = false;
+
+                    // Слушаем события, которые указывают на уход со страницы
+                    const handleVisibilityChange = () => {
+                        if (document.hidden) {
+                            pageHidden = true;
+                        }
+                    };
+                    const handlePageHide = () => {
+                        pageHidden = true;
+                    };
+                    const handleBlur = () => {
+                        // Blur может происходить при клике на другие окна, но если страница осталась видимой,
+                        // это может быть ложным срабатыванием. Используем осторожно.
+                        // Для простоты не считаем blur признаком ухода.
+                    };
+
+                    document.addEventListener('visibilitychange', handleVisibilityChange);
+                    window.addEventListener('pagehide', handlePageHide);
+
+                    // Пытаемся перейти
+                    redirectToHapp();
+
+                    // Через REDIRECT_CHECK_DELAY_MS проверяем, осталась ли страница видимой
+                    setTimeout(() => {
+                        // Удаляем слушатели
+                        document.removeEventListener('visibilitychange', handleVisibilityChange);
+                        window.removeEventListener('pagehide', handlePageHide);
+
+                        // Если страница всё ещё видима (переход не произошёл), показываем кнопку
+                        if (!pageHidden && !document.hidden) {
+                            showManualButton();
+                        }
+                    }, REDIRECT_CHECK_DELAY_MS);
+
+                }, AUTO_REDIRECT_DELAY_MS);
+            }
+
+            // ===== Инициализация =====
+            // Запускаем загрузку данных о подписке параллельно
+            fetchAndParseSubscription();
+
+            // Запускаем авто-переход
+            attemptAutoRedirect();
+
+            // Дополнительно: если пользователь вернулся на страницу после перехода (например, в мобильном 
+            // браузере при отсутствии приложения), кнопка должна быть доступна.
+            // Но мы уже показываем кнопку через таймаут, этого достаточно.
+        })();
+    </script>
+</body>
+</html>
