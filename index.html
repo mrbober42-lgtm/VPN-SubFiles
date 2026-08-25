@@ -405,10 +405,9 @@
 
             // ===== Функция для выполнения перехода по happ-ссылке =====
             function redirectToHapp() {
-                const happUrl = buildHappUrl(SUBSCRIPTION_FILE_URL);
+                window.open(SUBSCRIPTION_FILE_URL, '_blank');
                 // Попытка перехода. На мобильных устройствах это откроет приложение HApp.
-                // На десктопе обычно ничего не происходит, но некоторые браузеры могут показать предупреждение.
-                window.location.href = happUrl;
+        
             }
 
             // ===== Функция для показа кнопки (если авто-переход не удался) =====
